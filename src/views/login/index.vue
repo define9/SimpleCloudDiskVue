@@ -18,9 +18,9 @@
                 </div>
                 <div class="emailVerify">
                     <input v-model="registerInfo.emailCode" type="text" placeholder="输入邮件验证码">
-                    <el-button @click="sendEmailCode" size="mini" type="primary" round>发送邮件</el-button>
+                    <el-button :loading="sending" @click="sendEmailCode" size="mini" type="primary" round>发送邮件</el-button>
                 </div>
-                <button>注册</button>
+                <button @click="register">注册</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
@@ -78,21 +78,14 @@ export default {
                 emailCode: '',
             },
             captcha: '',
+            sending: false,
+            btnload: false
         };
     },
     methods: {
         login(needMD5 = true) {
             if (!this.verifyCaptcha()) return
-            if (
-                this.userInfo.username.length === 0 ||
-                this.userInfo.password.length === 0
-            ) {
-                this.$message({
-                    type: "warning",
-                    message: "账号或密码为空",
-                })
-                return
-            }
+            if (!this.verifyUsernamePassword()) return
             axios
                 .post(
                     `/cloud_disk_api/user/login?captcha=${this.captcha}`,
@@ -113,14 +106,12 @@ export default {
                         return
                     }
 
-                    document.cookie = "token=" + res.data.data.token;
-                    this.userInfo.password = md5(this.userInfo.password);
+                    document.cookie = "token=" + res.data.data
                     this.$store.commit("UPDATEUSERINFO", {
-                        userInfo: res.data.data.userInfo,
-                        token: res.data.data.token,
-                        isAuth: res.data.code === 0,
+                        token: res.data.data,
+                        isAuth: res.data.success,
                     })
-                    this.$router.replace("/");
+                    this.$router.replace("/")
                 })
                 .catch(() => {
                     this.$message({
@@ -134,17 +125,14 @@ export default {
         },
         sendEmailCode() {
             if (!this.verifyCaptcha()) return
-            if (this.registerInfo.email.length === 0 || !/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.registerInfo.email)) {
-                this.$message({ type: "warning", message: "邮箱地址错误"})
-                return
-            }
-
+            if (!this.verifyEmail()) return
+            this.sending = true
             axios.get(`/cloud_disk_api/core/sendEmail?email=${this.registerInfo.email}&captcha=${this.captcha}`)
                 .then((res) => {
                     if (res.data.success) {
                         this.$message({
                             type: "success",
-                            message: "成功",
+                            message: "成功"
                         })
                     } else {
                         this.$message({
@@ -158,6 +146,8 @@ export default {
                         type: "error",
                         message: "网络连接错误",
                     })
+                }).finally(() => {
+                    this.sending = false
                 })
         },
         verifyCaptcha() {
@@ -169,6 +159,66 @@ export default {
                 return false
             }
             return true
+        },
+        verifyEmail() {
+            if (this.registerInfo.email.length === 0 || !/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.registerInfo.email)) {
+                this.$message({ type: "warning", message: "邮箱地址错误"})
+                return false
+            }
+            return true
+        },
+        verifyUsernamePassword() {
+            if (
+                this.userInfo.username.length === 0 ||
+                this.userInfo.password.length === 0
+            ) {
+                this.$message({
+                    type: "warning",
+                    message: "账号或密码为空",
+                })
+                return false
+            }
+            return true
+        },
+        register(needMD5 = true) {
+            if (!this.verifyCaptcha()) return
+            if (!this.verifyEmail()) return
+            if (!this.verifyUsernamePassword()) return
+
+            axios
+                .post(
+                    `/cloud_disk_api/user/register?emailCode=${this.registerInfo.emailCode}`,
+                    {
+                        username: this.registerInfo.username,
+                        password: needMD5
+                            ? md5(this.registerInfo.password)
+                            : this.userInfo.password,
+                        email: this.registerInfo.email
+                    }
+                ).then((res) => {
+                    if (!res.data.success) {
+                        this.$message({
+                            type: "error",
+                            message: res.data.errMessage
+                        })
+                    } else {
+                        this.$message({
+                            type: "success",
+                            message: "注册成功",
+                        })
+                        document.cookie = "token=" + res.data.data
+                        this.$store.commit("UPDATEUSERINFO", {
+                            token: res.data.data,
+                            isAuth: res.data.success,
+                        })
+                        this.$router.replace("/")
+                    }
+                }).catch(() => {
+                    this.$message({
+                        type: "error",
+                        message: "网络连接错误",
+                    })
+                })
         }
     },
     mounted() {
