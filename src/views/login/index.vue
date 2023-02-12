@@ -1,7 +1,7 @@
 <template>
     <div class="dowebok" id="dowebok">
         <div class="form-container sign-up-container">
-            <form action="#">
+            <form @submit.prevent>
                 <h1>注册</h1>
                 <!-- <div class="social-container">
                     <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -9,14 +9,22 @@
                     <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                 </div>
                 <span>或使用邮箱注册</span> -->
-                <input type="text" placeholder="姓名">
-                <input type="email" placeholder="电子邮箱">
-                <input type="password" placeholder="密码">
+                <input v-model="registerInfo.username" type="text" placeholder="账号(不可更改)">
+                <input v-model="registerInfo.password" type="password" placeholder="密码">
+                <input v-model="registerInfo.email" type="email" placeholder="电子邮箱">
+                <div class="captcha">
+                    <input v-model="captcha" type="text" placeholder="输入验证码(发送邮件)">
+                    <img id="registerCaptchaImg" @click="refreshCaptcha" title="点击切换验证码"/>
+                </div>
+                <div class="emailVerify">
+                    <input v-model="registerInfo.emailCode" type="text" placeholder="输入邮件验证码">
+                    <el-button @click="sendEmailCode" size="mini" type="primary" round>发送邮件</el-button>
+                </div>
                 <button>注册</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
-            <form action="#">
+            <form @submit.prevent>
                 <h1>登录</h1>
                 <!-- <div class="social-container">
                     <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -24,14 +32,14 @@
                     <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                 </div>
                 <span>或使用您的帐号</span> -->
-                <input type="email" placeholder="电子邮箱">
-                <input type="password" placeholder="密码">
-                <div>
-                    <input type="text" placeholder="输入验证码">
-                    <img/>
+                <input v-model="userInfo.username" type="text" placeholder="账号">
+                <input v-model="userInfo.password" type="password" placeholder="密码">
+                <div class="captcha">
+                    <input v-model="captcha" type="text" placeholder="输入验证码">
+                    <img id="loginCaptchaImg" @click="refreshCaptcha" title="点击切换验证码"/>
                 </div>
-                <a href="#">忘记密码？</a>
-                <button>登录</button>
+                <!-- <a href="#">忘记密码？</a> -->
+                <button @click="login">登录</button>
             </form>
         </div>
         <div class="overlay-container">
@@ -53,7 +61,6 @@
 
 <script>
 import axios from "axios"
-import QueryString from "qs"
 import md5 from "js-md5"
 
 export default {
@@ -61,21 +68,21 @@ export default {
     data() {
         return {
             userInfo: {
-                username: "",
-                password: "",
-                captcha: ""
+                username: '',
+                password: ''
             },
+            registerInfo: {
+                username: '',
+                password: '',
+                email: '',
+                emailCode: '',
+            },
+            captcha: '',
         };
     },
     methods: {
         login(needMD5 = true) {
-            if (this.userInfo.captcha.length === 0) {
-                this.$message({
-                    type: "warning",
-                    message: "验证码为空",
-                });
-                return;
-            }
+            if (!this.verifyCaptcha()) return
             if (
                 this.userInfo.username.length === 0 ||
                 this.userInfo.password.length === 0
@@ -83,58 +90,99 @@ export default {
                 this.$message({
                     type: "warning",
                     message: "账号或密码为空",
-                });
-                return;
+                })
+                return
             }
             axios
                 .post(
-                    "/cloud_disk_api/user/login",
-                    QueryString.stringify({
+                    `/cloud_disk_api/user/login?captcha=${this.captcha}`,
+                    {
                         username: this.userInfo.username,
                         password: needMD5
                             ? md5(this.userInfo.password)
-                            : this.userInfo.password,
-                        captcha: this.userInfo.captcha
-                    })
+                            : this.userInfo.password
+                    }
                 )
                 .then((res) => {
-                    this.$message({
-                        type: res.data.code == 0 ? "success" : "warning",
-                        message: res.data.msg,
-                    });
-
-                    if (res.data.code === 0) {
-                        document.cookie = "token=" + res.data.data.token;
-                        this.userInfo.password = md5(this.userInfo.password);
-                        this.$store.commit("UPDATEUSERINFO", {
-                            userInfo: res.data.data.userInfo,
-                            token: res.data.data.token,
-                            isAuth: res.data.code === 0,
-                        });
-                        this.$router.replace("/");
-                    } else {
-                        document.getElementsByTagName('img')[0].click();
+                    if (!res.data.success) {
+                        this.$message({
+                            type: "warning",
+                            message: res.data.errMessage
+                        })
+                        document.getElementById('loginCaptchaImg').click()
+                        return
                     }
+
+                    document.cookie = "token=" + res.data.data.token;
+                    this.userInfo.password = md5(this.userInfo.password);
+                    this.$store.commit("UPDATEUSERINFO", {
+                        userInfo: res.data.data.userInfo,
+                        token: res.data.data.token,
+                        isAuth: res.data.code === 0,
+                    })
+                    this.$router.replace("/");
                 })
                 .catch(() => {
                     this.$message({
                         type: "error",
                         message: "网络连接错误",
-                    });
-                });
+                    })
+                })
         },
         refreshCaptcha(e) {
             e.target.src = "/cloud_disk_api/core/captcha?_=" + new Date().getTime()
+        },
+        sendEmailCode() {
+            if (!this.verifyCaptcha()) return
+            if (this.registerInfo.email.length === 0 || !/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.registerInfo.email)) {
+                this.$message({ type: "warning", message: "邮箱地址错误"})
+                return
+            }
+
+            axios.get(`/cloud_disk_api/core/sendEmail?email=${this.registerInfo.email}&captcha=${this.captcha}`)
+                .then((res) => {
+                    if (res.data.success) {
+                        this.$message({
+                            type: "success",
+                            message: "成功",
+                        })
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.data.errMessage,
+                        })
+                        document.getElementById('registerCaptchaImg').click()
+                    }
+                }).catch(() => {
+                    this.$message({
+                        type: "error",
+                        message: "网络连接错误",
+                    })
+                })
+        },
+        verifyCaptcha() {
+            if (this.captcha.length === 0) {
+                this.$message({
+                    type: "warning",
+                    message: "验证码为空",
+                })
+                return false
+            }
+            return true
         }
     },
     mounted() {
         var container = document.getElementById('dowebok')
         document.getElementById('signUp').addEventListener('click', function() {
             container.classList.add('right-panel-active')
+            document.getElementById('registerCaptchaImg').src = "/cloud_disk_api/core/captcha?_=" + new Date().getTime()
         })
         document.getElementById('signIn').addEventListener('click', function() {
             container.classList.remove('right-panel-active')
+            document.getElementById('loginCaptchaImg').src = "/cloud_disk_api/core/captcha?_=" + new Date().getTime()
+            
         })
+        document.getElementById('loginCaptchaImg').src = "/cloud_disk_api/core/captcha?_=" + new Date().getTime()
     },
 }
 </script>
@@ -346,4 +394,37 @@ button.ghost {
     transform: translateY(20%);
 }
 
+.captcha {
+    margin-bottom: 10px;
+}
+
+.captcha img {
+    width: 35%;
+    height: 90%;
+    cursor: pointer;
+    vertical-align:middle;
+}
+
+.captcha input {
+    width: 60%;
+    margin: 0;
+    margin-right: 5%;
+    vertical-align:middle;
+}
+
+.emailVerify {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.emailVerify input {
+    width: 60%;
+    margin: 0;
+    margin-right: 5%;
+    vertical-align:middle;
+}
+
+.emailVerify .el-button {
+    width: 35%;
+}
 </style>

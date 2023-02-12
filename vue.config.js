@@ -7,7 +7,7 @@ module.exports = defineConfig({
     proxy: {
       '/cloud_disk_api': {
         //target: 'https://syhu.com.cn:8084',
-        target: 'https://localhost:8085',
+        target: 'http://localhost:8085',
         ws: false,
         secure: false,
         changeOrigin: true,
