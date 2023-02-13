@@ -2,10 +2,20 @@
     <el-aside width="240px">
         <div class="sider-top">
             <div class="sider-top-title">我是标题和logo</div>
+            <ul class="sider-top-list">
+                <li @click="menuClick(item)" class="sider-top-item" v-for="item in topList" :key="item">
+                    <span class="sider-top-item-icon">图</span>
+                    <div>
+                        <span>{{ item.name }}</span>
+                    </div>
+                </li>
+            </ul>
         </div>
         <div class="sider-bottom">
             <div>我是容量</div>
-            <div>我是用户信息</div>
+            <div class="userInfo">
+                <img/>
+            </div>
         </div>
     </el-aside>
 </template>
@@ -18,13 +28,16 @@ export default {
     name: 'Aside',
     data() {
         return {
-
+            topList: []
         }
     },
     methods: {
-
+        menuClick(item) {
+            alert(item.name)
+        }
     },
     mounted() {
+        this.topList = require('@/assets/topList.json')
     },
 }
 </script>
@@ -42,7 +55,6 @@ export default {
 }
 
 .sider-top {
-    background-color: blue;
     height: 360px;
 }
 
@@ -51,10 +63,61 @@ export default {
     height: 96px;
 }
 
+.sider-top .sider-top-list {
+    height: 264px;
+    background-color: pink;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+}
+.sider-top .sider-top-item {
+    font-weight: 500;
+    height: 44px;
+    width: 216px;
+    cursor: pointer;
+    position: relative;
+    list-style: none;
+    padding-left: 12px;
+    line-height: 14px;
+    align-items: center;
+    border-radius: 10px;
+    display: flex;
+}
+.sider-top .sider-top-item:hover {
+    background-color: rgb(236, 236, 238);
+    transition: background-color .5s ease;
+}
+
+.sider-top .sider-top-item .sider-top-item-icon {
+    font-size: 24px;
+    margin-right: 16px;
+}
+
+
 .sider-bottom {
     background-color: green;
     height: 214px;
     position: absolute;
     bottom: 0;
+    width: 240px;
+}
+
+.sider-bottom .userInfo {
+    height: 75px;
+    width: 192px;
+    background-color: azure;
+    position: absolute;
+    bottom: 0;
+    padding: 0 24px;
+    vertical-align: middle;
+}
+
+.sider-bottom .userInfo img {
+    width: 32px;
+    height: 32px;
+    margin-top: 21px;
 }
 </style>

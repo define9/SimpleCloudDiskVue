@@ -471,7 +471,7 @@ button.ghost {
     width: 60%;
     margin: 0;
     margin-right: 5%;
-    vertical-align:middle;
+    vertical-align: middle;
 }
 
 .emailVerify .el-button {
