@@ -3,8 +3,10 @@
         <div class="sider-top">
             <div class="sider-top-title">我是标题和logo</div>
             <ul class="sider-top-list">
-                <li @click="menuClick(item)" class="sider-top-item" v-for="item in topList" :key="item">
-                    <span class="sider-top-item-icon">图</span>
+                <li @click="menuClick(item)" class="sider-top-item" v-for="(item, i) in topList" :key="i">
+                    <span class="sider-top-item-icon">
+                        <i :class="`iconfont ${item.icon}`"></i>
+                    </span>
                     <div>
                         <span>{{ item.name }}</span>
                     </div>
@@ -33,7 +35,11 @@ export default {
     },
     methods: {
         menuClick(item) {
-            alert(item.name)
+            var lis = document.querySelectorAll(".sider-top .sider-top-item")
+            lis.forEach(item => {
+                item.style.backgroundColor = ''
+            })
+            event.currentTarget.style.backgroundColor = 'rgb(227,227,229)'
         }
     },
     mounted() {
@@ -85,15 +91,19 @@ export default {
     align-items: center;
     border-radius: 10px;
     display: flex;
+    transition: background-color .5s ease;
+    margin-top: 3px;
 }
 .sider-top .sider-top-item:hover {
     background-color: rgb(236, 236, 238);
-    transition: background-color .5s ease;
 }
 
 .sider-top .sider-top-item .sider-top-item-icon {
-    font-size: 24px;
     margin-right: 16px;
+}
+
+.sider-top .sider-top-item .sider-top-item-icon i {
+    font-size: 23px;
 }
 
 

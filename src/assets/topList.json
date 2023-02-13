@@ -1,12 +1,17 @@
 [
     {
-        "icon": "图标",
-        "name": "名字1",
+        "icon": "icon-wenben",
+        "name": "我的文件",
         "cmpName": ""
     },
     {
-        "icon": "图标",
-        "name": "名字2",
+        "icon": "icon-xiangce1",
+        "name": "相册",
+        "cmpName": ""
+    },
+    {
+        "icon": "icon-shoucangjia",
+        "name": "我的收藏",
         "cmpName": ""
     }
 ]
