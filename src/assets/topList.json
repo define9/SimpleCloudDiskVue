@@ -2,16 +2,16 @@
     {
         "icon": "icon-wenben",
         "name": "我的文件",
-        "cmpName": ""
+        "jumpPath": "/file"
     },
     {
         "icon": "icon-xiangce1",
         "name": "相册",
-        "cmpName": ""
+        "jumpPath": "/"
     },
     {
         "icon": "icon-shoucangjia",
         "name": "我的收藏",
-        "cmpName": ""
+        "jumpPath": "/"
     }
 ]

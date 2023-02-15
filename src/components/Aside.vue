@@ -40,10 +40,21 @@ export default {
                 item.style.backgroundColor = ''
             })
             event.currentTarget.style.backgroundColor = 'rgb(227,227,229)'
+
+            // 跳转路由
+            this.$router.push(item.jumpPath)
         }
     },
     mounted() {
         this.topList = require('@/assets/topList.json')
+        this.$nextTick(() => {
+            if (this.topList == null || this.topList.length == 0) {
+                console.warn("菜单选项为空")
+            } else {
+                // 默认选中第一个
+                document.querySelector('.sider-top-list li').click()
+            }
+        })
     },
 }
 </script>

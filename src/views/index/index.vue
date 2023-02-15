@@ -2,7 +2,7 @@
     <el-container>
         <Aside></Aside>
         <el-main>
-            
+            <router-view />
         </el-main>
     </el-container>
 </template>
@@ -15,7 +15,7 @@ import md5 from "js-md5"
 export default {
     name: 'Index',
     components: {
-        Aside
+        Aside,
     },
     data() {
         return {
