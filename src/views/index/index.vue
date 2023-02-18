@@ -1,6 +1,8 @@
 <template>
     <el-container>
-        <Aside></Aside>
+        <div class="aside-div">
+            <Aside class="aside"></Aside>
+        </div>
         <el-main>
             <router-view />
         </el-main>
@@ -32,11 +34,19 @@ export default {
 
 <style scoped>
 .el-container {
-    height: 100vh;
+    height: 100%;
 }
-.el-aside {
+
+.aside-div {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    width: 240px;
+}
+
+.aside {
     background-color: rgb(245, 245, 246);
-    overflow-y: scroll;
+    height: 100%;
     min-height: 580px;
     position: relative;
 }
@@ -44,20 +54,8 @@ export default {
     display: none;
 }
 
-.sider-top {
-    background-color: blue;
-    height: 360px;
-}
-
-.sider-top .sider-top-title {
-    background-color: brown;
-    height: 96px;
-}
-
-.sider-bottom {
-    background-color: green;
-    height: 214px;
-    position: absolute;
-    bottom: 0;
+.el-main {
+    padding: 0;
+    flex: 1;
 }
 </style>
