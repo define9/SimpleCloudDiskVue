@@ -1,16 +1,14 @@
 <template>
-    <div class="folder-card">
-        <div class="folder">
-            <img class="folder-folder" v-if="folder.type=='folder'" src="/folder.png"/>
-            <img class="folder-pdf" v-if="folder.mimeType=='application/pdf'" src="/pdf.png"/>
-            <img class="folder-img" v-if="folder.mimeType.substr(0,5)=='image'" src="/img.png"/>
-            <div>
-                {{ folder.name }}
-            </div>
-            <span class="folder-date">
-                {{ folder.date }}
-            </span>
+    <div class="folder">
+        <img class="folder-folder" v-if="folder.type=='folder'" src="/folder.png"/>
+        <img class="folder-pdf" v-if="folder.mimeType=='application/pdf'" src="/pdf.png"/>
+        <img class="folder-img" v-if="folder.mimeType!=null&&folder.mimeType.substr(0,5)=='image'" src="/img.png"/>
+        <div class="card-name">
+            {{ folder.name }}
         </div>
+        <span class="folder-date">
+            {{ folder.date | dateFilter }}
+        </span>
     </div>
 </template>
 <script>
@@ -30,22 +28,29 @@ export default {
         }, // 一个文件夹卡片, 对应 folderTree.json 一个content
     },
     methods: {
-
     },
     mounted() {
     },
+    filters: {
+        dateFilter: function(value) {
+            let dt = new Date(value)
+            let now= new Date()
+            
+            let year = dt.getFullYear()
+            let month = (dt.getMonth() + 1).toString().padStart(2, '0')
+            let date = dt.getDate().toString().padStart(2, '0')
+            let hour = dt.getHours().toString().padStart(2, '0')
+            let minute = dt.getMinutes().toString().padStart(2, '0')
+            if (year == now.getFullYear()) {
+                return `${month}-${date} ${hour}:${minute}`
+            }
+            return `${year}/${month}-${date} ${hour}:${minute}`
+        }
+    }
 }
 </script>
 
 <style scoped>
-
-.folder-card {
-    height: 207px;
-    width: 164px;
-    text-align: center;
-    user-select:none;
-    margin: auto;
-}
 
 .folder {
     border-radius: 5px;
@@ -79,6 +84,11 @@ export default {
 
 ::-webkit-scrollbar {
     display: none;
+}
+
+.card-name {
+    text-overflow: ellipsis;
+    overflow-x: auto;
 }
 
 .folder-date {

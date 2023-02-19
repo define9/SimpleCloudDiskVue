@@ -1,39 +1,18 @@
 {
     "id": 1,
-    "name": "我是根文件夹",
+    "name": "我是文件夹",
     "date": "2022-10-10",
+    "path": [
+        {
+            "id": 0,
+            "name": "我是一个根文件夹"
+        }
+    ],
     "content": [
         {
             "id": 2,
             "type": "folder",
-            "name": "我是一个文件夹",
-            "date": "2022-10-10",
-            "mimeType": "",
-            "hash": "",
-            "size": 0
-        },
-        {
-            "id": 2,
-            "type": "folder",
-            "name": "我是一个文件夹",
-            "date": "2022-10-10",
-            "mimeType": "",
-            "hash": "",
-            "size": 0
-        },
-        {
-            "id": 2,
-            "type": "folder",
-            "name": "我是一个文件夹",
-            "date": "2022-10-10",
-            "mimeType": "",
-            "hash": "",
-            "size": 0
-        },
-        {
-            "id": 2,
-            "type": "folder",
-            "name": "我是一个文件夹",
+            "name": "我是一个文件夹2",
             "date": "2022-10-10",
             "mimeType": "",
             "hash": "",
@@ -61,6 +40,33 @@
             "id": 5,
             "type": "folder",
             "name": "我是一个文件夹5",
+            "date": "2022-10-10",
+            "mimeType": "",
+            "hash": "",
+            "size": 0
+        },
+        {
+            "id": 6,
+            "type": "folder",
+            "name": "我是一个文件夹6",
+            "date": "2022-10-10",
+            "mimeType": "",
+            "hash": "",
+            "size": 0
+        },
+        {
+            "id": 7,
+            "type": "folder",
+            "name": "我是一个文件夹7",
+            "date": "2022-10-10",
+            "mimeType": "",
+            "hash": "",
+            "size": 0
+        },
+        {
+            "id": 8,
+            "type": "folder",
+            "name": "我是一个文件夹8",
             "date": "2022-10-10",
             "mimeType": "",
             "hash": "",

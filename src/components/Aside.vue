@@ -82,7 +82,6 @@ export default {
 
 .sider-top .sider-top-list {
     height: 264px;
-    background-color: pink;
     margin: 0;
     padding: 0;
     display: flex;

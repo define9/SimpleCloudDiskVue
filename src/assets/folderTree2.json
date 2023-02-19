@@ -1,0 +1,43 @@
+{
+    "id": 1,
+    "name": "我是一个文件夹",
+    "date": "2022-10-10",
+    "content": [
+        {
+            "id": 4,
+            "type": "folder",
+            "name": "我是一个文件夹4",
+            "date": "2022-10-10",
+            "mimeType": "",
+            "hash": "",
+            "size": 0
+        },
+        {
+            "id": 5,
+            "type": "folder",
+            "name": "我是一个文件夹5",
+            "date": "2022-10-10",
+            "mimeType": "",
+            "hash": "",
+            "size": 0
+        },
+        {
+            "id": 1,
+            "type": "file",
+            "name": "我是一个文件",
+            "date": "2022-10-10",
+            "mimeType": "application/pdf",
+            "hash": "我是文件的hash值",
+            "size": 123456
+        },
+        {
+            "id": 2,
+            "type": "file",
+            "name": "我是一张图片",
+            "date": "2022-10-10",
+            "mimeType": "image/jpeg",
+            "hash": "我是文件的hash值",
+            "size": 123456
+        }
+    ]
+}
