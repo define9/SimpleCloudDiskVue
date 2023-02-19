@@ -5,12 +5,16 @@ Vue.use(Vuex)
 
 // 用来存储数据
 const state = {
+    machineInfo: {
+        screenWidth:document.documentElement.clientWidth, //屏幕宽度
+        screenHeight:document.documentElement.clientHeight, //屏幕高度
+    },
+    
     token: sessionStorage.getItem('token') || '',
     isAuth: sessionStorage.getItem('isAuth') === 'true' || false
 }
 // 响应组件中的事件
 const actions = {
- 
 }
 // 操作数据
 const mutations = {
@@ -23,6 +27,10 @@ const mutations = {
             state.isAuth = value.isAuth
             sessionStorage.setItem('isAuth', state.isAuth)
         }
+    },
+    setInnerWH(state, value) {
+        state.machineInfo.screenWidth = value.width
+        state.machineInfo.screenHeight = value.height
     }
 }
 // 用来将state数据进行加工

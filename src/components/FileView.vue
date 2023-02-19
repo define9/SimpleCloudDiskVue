@@ -1,14 +1,11 @@
 <template>
     <div class="root">
         <el-header>
-
         </el-header>
         <el-main>
             <el-row :gutter="20">
-                <el-col class="folder" :span="folderSpan" v-for="folder in folderTree" :key="folder.id">
-                    <div class="">
-                        <img src="https://img.alicdn.com/imgextra/i1/O1CN01rGJZac1Zn37NL70IT_!!6000000003238-2-tps-230-180.png"/>
-                    </div>
+                <el-col :span="24 / folderCountRow" v-for="folder, i in folderTree.content" :key="i">
+                    <FolderCard :folder="folder"></FolderCard>
                 </el-col>
             </el-row>
         </el-main>
@@ -16,8 +13,7 @@
 </template>
 
 <script>
-import axios from "axios"
-import md5 from "js-md5"
+import FolderCard from "./FolderCard"
 
 export default {
     name: 'FileView',
@@ -25,8 +21,11 @@ export default {
         return {
             currentFolder: [],
             folderTree: [],
-            folderSpan: 4
+            folderCountRow: 6, // 每行显示的个数, 可以把被24整除最好 1,2,3,4,6,8,12,24
         }
+    },
+    components: {
+        FolderCard
     },
     methods: {
 
@@ -34,13 +33,22 @@ export default {
     mounted() {
         this.folderTree = require('@/assets/folderTree.json')
     },
+    watch: {
+        '$store.state.machineInfo': {
+            handler() {
+                let width = this.$store.state.machineInfo.screenWidth
+                this.folderCountRow = (width - 300) / 164
+            },
+            deep: true,
+        }
+    }
 }
 </script>
 
 <style scoped>
 .root {
     height: 100%;
-    background-color: rebeccapurple;
+    background-color: rgb(255,255,255);
 }
 .el-header {
     height: 15vh;
@@ -49,17 +57,7 @@ export default {
 .el-main {
     height: 80vh;
     margin: 10px;
+    overflow-x: hidden;
 }
 
-.folder {
-    height: 207px;
-}
-
-.folder img{
-    width: 70%;
-}
-
-::-webkit-scrollbar {
-    display: none;
-}
 </style>

@@ -13,5 +13,15 @@ Vue.config.productionTip = false
 new Vue({
   render: h => h(App),
   router,
-  store
+  store,
+  mounted() {
+    var _this = this
+    window.onresize = function(){ // 定义窗口大小变更通知事件
+      let info = {
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight,
+      }
+      _this.$store.commit('setInnerWH', info)
+    }
+  }
 }).$mount('#app')
