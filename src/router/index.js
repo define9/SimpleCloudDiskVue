@@ -23,6 +23,11 @@ const router = new Router({
                     path: 'file',
                     name: 'file',
                     component: () => import('@/components/FileView')
+                },
+                {
+                    path: 'manager',
+                    name: 'manager',
+                    component: () => import('@/components/Manager')
                 }
             ],
             meta: {
