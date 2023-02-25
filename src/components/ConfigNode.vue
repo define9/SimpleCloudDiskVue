@@ -35,6 +35,9 @@
                             @click="handleUpdate(scope.$index, scope.row, false)">启用</el-button>
                     </template>
                 </el-table-column>
+                <template slot="empty">
+                    <el-empty description="没有数据"></el-empty>
+                </template>
             </el-table>
         </el-main>
         <el-footer>

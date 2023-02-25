@@ -1,8 +1,10 @@
 <template>
     <div class="folder">
         <img class="folder-folder" v-if="folder.type=='folder'" src="/folder.png"/>
-        <img class="folder-pdf" v-if="folder.mimeType=='application/pdf'" src="/pdf.png"/>
-        <img class="folder-img" v-if="folder.mimeType!=null&&folder.mimeType.substr(0,5)=='image'" src="/img.png"/>
+        <img class="folder-pdf" v-else-if="folder.mimeType=='application/pdf'" src="/pdf.png"/>
+        <img class="folder-img" v-else-if="folder.mimeType!=null&&folder.mimeType.substr(0,5)=='image'" src="/img.png"/>
+        <img class="folder-txt" v-else-if="folder.mimeType!=null&&folder.mimeType.substr(0,4)=='text'" src="/txt.png"/>
+        <img class="folder-txt" v-else src="/default.png"/>
         <div class="card-name">
             {{ folder.name }}
         </div>
@@ -76,6 +78,10 @@ export default {
 
 .folder-img {
     width: 90px;
+}
+
+.folder-txt {
+    width: 70px;
 }
 
 .folder:hover {

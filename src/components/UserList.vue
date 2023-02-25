@@ -9,28 +9,28 @@
                         <el-avatar :src="scope.row.avatar"></el-avatar>
                     </template>
                 </el-table-column>
-                <el-table-column label="用户名">
+                <el-table-column label="用户名" width="100">
                     <template slot-scope="scope">
                         <el-tag size="medium">{{ scope.row.username }}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="nick" label="昵称">
+                <el-table-column prop="nick" label="昵称" width="90">
                 </el-table-column>
                 <el-table-column prop="role" label="角色" width="100">
                 </el-table-column>
-                <el-table-column label="容量" width="90">
+                <el-table-column label="容量" width="70">
                     <template slot-scope="scope">
                         {{ scope.row.capacity | capacityFilter }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="disable" label="启用" width="60">
+                <el-table-column prop="disable" label="启用" width="50">
                     <template slot-scope="scope">
                         <el-switch :value="!scope.row.disable" disabled></el-switch>
                     </template>
                 </el-table-column>
-                <el-table-column prop="email" label="邮箱" width="150">
+                <el-table-column prop="email" label="邮箱" width="130">
                 </el-table-column>
-                <el-table-column prop="remark" label="备注" width="150">
+                <el-table-column prop="remark" label="备注">
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -41,6 +41,9 @@
                             @click="handleUpdate(scope.$index, scope.row, false)">启用</el-button>
                     </template>
                 </el-table-column>
+                <template slot="empty">
+                    <el-empty description="没有数据"></el-empty>
+                </template>
             </el-table>
         </el-main>
         <el-footer>

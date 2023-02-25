@@ -14,7 +14,12 @@
             </ul>
         </div>
         <div class="sider-bottom">
-            <div>我是容量</div>
+            <div class="progress">
+                <div>
+                    <span>123GB</span>/<span>200GB</span>
+                </div>
+                <el-progress :percentage="50"></el-progress>
+            </div>
             <div class="userInfo">
                 <img/>
             </div>
@@ -118,11 +123,20 @@ export default {
 
 
 .sider-bottom {
-    background-color: green;
     height: 214px;
     position: absolute;
     bottom: 0;
     width: 240px;
+}
+
+.sider-bottom .progress{
+    padding: 28px 24px;
+}
+
+.sider-bottom .progress div {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--context_primary);
 }
 
 .sider-bottom .userInfo {
